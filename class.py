@@ -19,11 +19,11 @@ class Time:
 		self.period_max = 100
 		self.time = np.arange(self.t0, self.period_max)
 		
-class Stock(Time):
+class Stock:
 	
-	def __init__(self):
+	def __init__(self, time_obj):
 		self.v0 = 0
-		self.time = Time().time
+		self.time = time_obj.time
 		self.brownianMotion()
 		
 	def brownianMotion(self, plot= False):
@@ -34,13 +34,13 @@ class Stock(Time):
 			self.plot = plt.plot(self.time, self.random_process)	
 			
 		
-class Portfolio():
+class Portfolio(Time):
 	
-	def __init__(self, plot = False):
+	def __init__(self, time_obj, plot = False):
 		
 		self.number_stock = 1
-		self.time = Time().time
-		self.stocks = [Stock().random_process for i in range(self.number_stock)]
+		self.time = time_obj.time
+		self.stocks = [Stock(time_obj).random_process for i in range(self.number_stock)]
 		self.value_portfolio = 0
 		
 		x= self.time
@@ -73,19 +73,39 @@ class Liabilities(Stock):
 	
 class Action:
 	
-	def __init__(self):
+	def __init__(self, time_obj):
 		
+		self.time = time_obj.time
 		self.action()
+		
 		
 	def action(self):
 		
-		self.action = np.random.choice(["buy","sell"])
+		self.action_value = np.random.choice(["buy","sell"])
 		
-	def operation(self, portfolio):
+		return self.action_value
+		
+	def actionSet(self):
+		self.action_set =  [ self.action() for t in range(self.time.shape[0]) ] 	
+	
+	def chooseStock(self,portfolio_obj):
+		self.choice_stock = np.random.randint(portfolio_obj.number_stock +1)
+		return self.choice_stock
+	
+	def decision(self, portfolio_obj):
+		self.decision_str = self.action() + "stock" + str(self.chooseStock(portfolio_obj))
+		return self.decision_str
+	
+	def decisionSet(self, portfolio_obj):
+		self.decision_set =  [ self.decision(portfolio_obj) for t in range(self.time.shape[0]) ] 	
+	
+	def operation(self, portfolio_obj):
 		
 		if self.action == "buy":
-			portfolio.value_portfolio = portfolio.value_portfolio +  
-					
+			
+			
+			portfolio_obj.value_portfolio = portfolio_obj.value_portfolio 
+						
 		
 		
 		
