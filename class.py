@@ -16,7 +16,7 @@ class Time:
 		
 	def loopingTime(self):
 #		self.period_max = int(input("Enter a maximal period time :"))
-		self.period_max = 100
+		self.period_max = 10
 		self.time = np.arange(self.t0, self.period_max)
 		
 class Stock:
@@ -56,27 +56,28 @@ class Portfolio(Time):
 	
 
 			  
-    def buySell(self):
-		
-		if 
-		
-		
-	
-	def valuePortfolio(self):
-		
-		 
+#    def buySell(self):
+#		
+#		if 
+#		
+#		
+#	
+#	def valuePortfolio(self):
+#		
+#		 
        
 	
 	
 	
-class Liabilities(Stock):
-	
+#class Liabilities(Stock):
+#	
 class Action:
 	
-	def __init__(self, time_obj):
+	def __init__(self, time_obj, portfolio_obj):
 		
 		self.time = time_obj.time
 		self.action()
+		self.decisionSet(portfolio_obj)
 		
 		
 	def action(self):
@@ -89,40 +90,55 @@ class Action:
 		self.action_set =  [ self.action() for t in range(self.time.shape[0]) ] 	
 	
 	def chooseStock(self,portfolio_obj):
-		self.choice_stock = np.random.randint(portfolio_obj.number_stock +1)
-		return self.choice_stock
+		
+		self.choice_stock = [np.random.randint(portfolio_obj.number_stock +1) for i in for t in range(self.time.shape[0]) ]
+ 		return self.choice_stock
 	
 	def decision(self, portfolio_obj):
-		self.decision_str = self.action() + "stock" + str(self.chooseStock(portfolio_obj))
+		self.decision_str = [np.random.randint(portfolio_obj.number_stock +1) for i in for t in range(self.time.shape[0]) ]
 		return self.decision_str
-	
+	# be careful change the decision set
 	def decisionSet(self, portfolio_obj):
+		
+		decision_set = []
+		for t in self.time:
+			decision_set.append(str(decision) + str())
+		
 		self.decision_set =  [ self.decision(portfolio_obj) for t in range(self.time.shape[0]) ] 	
 	
 	def operation(self, portfolio_obj):
 		
-		if self.action == "buy":
+#		for (t, stock_key,stock_value)  in zip(self.time,portfolio_obj.items()):
+		for t in self.time:
+		
+			if "buy" in self.decision_set[t]:
+				print(f'We buy the stock {self.decision_set[t]}')
 			
 			
 			portfolio_obj.value_portfolio = portfolio_obj.value_portfolio 
 						
 		
+
 		
 		
 		
-		
-	
-class State:
-	
-	
+#	
+#class State:
+#	
+#	
 
 	
 class Environment:
 	
 	def __init__(self):
 		self.state = 0
-		self.action = Action()
-		self.stock = Stock()
-		self.liabilities = Liabilities()
+		self.time_obj =Time()
+		self.t = self.time_obj.time
+		
+		self.stock = Stock(self.time_obj)
+		self.portfolio = Portfolio(self.time_obj)
+		self.action = Action(self.time_obj, self.portfolio)
+		
+#		self.liabilities = Liabilities()
 	
-	
+e = Environment()
