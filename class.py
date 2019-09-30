@@ -34,50 +34,67 @@ class Stock:
 			self.plot = plt.plot(self.time, self.random_process)	
 			
 		
-class Portfolio(Time):
+class Market(Time):
 	
 	def __init__(self, time_obj, plot = False):
 		
-		self.number_stock = 1
+		self.number_stock = 10
 		self.time = time_obj.time
 		self.stocks = [Stock(time_obj).random_process for i in range(self.number_stock)]
-		self.value_portfolio = 0
+		
 		
 		x= self.time
 		self.stocks_dic = {}
 		
-		# not working because we should unpack dictionary values
-		#line51: should be unpacked as arrays and not as dic_values inside 
+		# stire all random process in dictionnary :
+        # {stock0 : array(...), stock1 : array(...),...}
 		for i in range(self.number_stock):
 			  self.stocks_dic[f'stock{i}'] = self.stocks[i]
-			  if plot == True:
+			  if plot == True: # choose to display plot or not set to False by default
 				    self.plot = plt.plot(x, self.stocks[i])
-					
-	
+		plt.title("Stocks evolution")
+        
+class Portfolio(Time):
+    
+    def __init__(self, time_obj,market_obj, action_obj):
+        self.portfolio_value = 1000
+        self.time = time_obj.time
+        self.portfolio_array = np.array(np.repeat(np.nan,len(self.time)))
+        self.operation(market_obj,action_obj)
+        
+    def operation(self, market_obj, action_obj):
+        decision = list(action_obj.decision_set.values())
+        market = market_obj.stocks_dic
+        stock_id = action_obj.stock_id 
+        
+        for (i,  id_stock, dec) in zip(self.time,stock_id, decision ):
+            if "buy" in dec:
+                self.portfolio_array[i] = market[id_stock][i] # add to the portfolio the stock to buy 
+            elif "sell" in dec:
+                 self.portfolio_array[i] = -market[id_stock][i] # add to the portfolio the stock to buy 
+        
+        self.portfolio_cum = np.cumsum(self.portfolio_array)
+        self.plot_portfolio = plt.plot(self.time, self.portfolio_cum  )
+        plt.title("Portfolio evolution")
+            
+            
+            
+            
+        
+        
 
-			  
-#    def buySell(self):
-#		
-#		if 
-#		
-#		
-#	
-#	def valuePortfolio(self):
-#		
-#		 
-       
-	
-	
-	
 #class Liabilities(Stock):
 #	
+            
 class Action:
 	
-	def __init__(self, time_obj, portfolio_obj):
+	def __init__(self, time_obj, market_obj):
 		
 		self.time = time_obj.time
-		self.action()
-		self.decisionSet(portfolio_obj)
+		self.actionSet()
+		self.chooseStock(market_obj)
+		self.decision(market_obj)
+        
 		
 		
 	def action(self):
@@ -88,44 +105,24 @@ class Action:
 		
 	def actionSet(self):
 		self.action_set =  [ self.action() for t in range(self.time.shape[0]) ] 	
+		return self.action_set
+    
+	def chooseStock(self,market_obj):
+		# generate stock index for further indexing in the portfolio class
+		self.choice_stock = [np.random.randint(market_obj.number_stock ) for t in range(self.time.shape[0]) ]
+		return self.choice_stock
 	
-	def chooseStock(self,portfolio_obj):
-		
-		self.choice_stock = [np.random.randint(portfolio_obj.number_stock +1) for i in for t in range(self.time.shape[0]) ]
- 		return self.choice_stock
-	
-	def decision(self, portfolio_obj):
-		self.decision_str = [np.random.randint(portfolio_obj.number_stock +1) for i in for t in range(self.time.shape[0]) ]
-		return self.decision_str
+	def decision(self, market_obj):
+        # concatenate the decision buy/sell + stock_{i} eg. {decision0 : "buy stock6",...}
+		self.decision_set = {}
+		self.stock_id = []
+		for ((i, act), stock_index) in zip(enumerate(self.action_set), self.choice_stock):
+                  self.decision_set[f'decision_{i}'] = act + " stock" + str(stock_index)
+                  self.stock_id.append("stock" + str(stock_index))
+		return self.decision_set
 	# be careful change the decision set
-	def decisionSet(self, portfolio_obj):
-		
-		decision_set = []
-		for t in self.time:
-			decision_set.append(str(decision) + str())
-		
-		self.decision_set =  [ self.decision(portfolio_obj) for t in range(self.time.shape[0]) ] 	
-	
-	def operation(self, portfolio_obj):
-		
-#		for (t, stock_key,stock_value)  in zip(self.time,portfolio_obj.items()):
-		for t in self.time:
-		
-			if "buy" in self.decision_set[t]:
-				print(f'We buy the stock {self.decision_set[t]}')
-			
-			
-			portfolio_obj.value_portfolio = portfolio_obj.value_portfolio 
-						
-		
 
-		
-		
-		
-#	
-#class State:
-#	
-#	
+
 
 	
 class Environment:
@@ -136,8 +133,9 @@ class Environment:
 		self.t = self.time_obj.time
 		
 		self.stock = Stock(self.time_obj)
-		self.portfolio = Portfolio(self.time_obj)
-		self.action = Action(self.time_obj, self.portfolio)
+		self.market = Market(self.time_obj)
+		self.action = Action(self.time_obj, self.market)
+		self.portfolio = Portfolio(self.time_obj, self.market, self.action)
 		
 #		self.liabilities = Liabilities()
 	
