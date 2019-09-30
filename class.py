@@ -34,28 +34,66 @@ class Stock(Time):
 			self.plot = plt.plot(self.time, self.random_process)	
 			
 		
-class Portfolio(Time):
+class Portfolio():
 	
 	def __init__(self, plot = False):
-		self.number_stock = 10
+		
+		self.number_stock = 1
 		self.time = Time().time
 		self.stocks = [Stock().random_process for i in range(self.number_stock)]
+		self.value_portfolio = 0
 		
-		if plot == True:
-			x= self.time
-			self.dic = {}
-			
-			# not working because we should unpack dictionary values
-			#line51: should be unpacked as arrays and not as dic_values inside 
-			for i in range(self.number_stock):
-				  self.dic[f'stock{i}'] = self.stocks[i]
-				  self.plot = plt.plot(x, self.stocks[i])
+		x= self.time
+		self.stocks_dic = {}
+		
+		# not working because we should unpack dictionary values
+		#line51: should be unpacked as arrays and not as dic_values inside 
+		for i in range(self.number_stock):
+			  self.stocks_dic[f'stock{i}'] = self.stocks[i]
+			  if plot == True:
+				    self.plot = plt.plot(x, self.stocks[i])
+					
+	
+
+			  
+    def buySell(self):
+		
+		if 
+		
+		
+	
+	def valuePortfolio(self):
+		
+		 
+       
 	
 	
 	
-class Liabilities:
+class Liabilities(Stock):
 	
 class Action:
+	
+	def __init__(self):
+		
+		self.action()
+		
+	def action(self):
+		
+		self.action = np.random.choice(["buy","sell"])
+		
+	def operation(self, portfolio):
+		
+		if self.action == "buy":
+			portfolio.value_portfolio = portfolio.value_portfolio +  
+					
+		
+		
+		
+		
+		
+	
+class State:
+	
 	
 
 	
