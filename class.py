@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
-
 """
-Created on Thu Sep 26 21:02:04 2019
+Created on Tue Oct  1 15:23:17 2019
 
 @author: sam
 """
+
+# -*- coding: utf-8 -*-
+
+"""
+Created on Thu Sep 26 21:02:04 2019
+@author: sam
+"""
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -51,29 +58,32 @@ class Market(Time):
 		for i in range(self.number_stock):
 			  self.stocks_dic[f'stock{i}'] = self.stocks[i]
 			  if plot == True: # choose to display plot or not set to False by default
-				    self.plot = plt.plot(x, self.stocks[i])
-		plt.title("Stocks evolution")
+				    self.plot = plt.plot(x, self.stocks[i], label = f'stock{i}')
+				    plt.legend(loc = "best")
+				    plt.title("Stocks evolution")
         
 class Portfolio(Time):
     
     def __init__(self, time_obj,market_obj, action_obj):
-        self.portfolio_value = 1000
+        self.portfolio_value0 = 1000
         self.time = time_obj.time
         self.portfolio_array = np.array(np.repeat(np.nan,len(self.time)))
         self.operation(market_obj,action_obj)
+#        self.portfolio_array[0] = self.portfolio_value
         
     def operation(self, market_obj, action_obj):
         decision = list(action_obj.decision_set.values())
         market = market_obj.stocks_dic
         stock_id = action_obj.stock_id 
-        
+
         for (i,  id_stock, dec) in zip(self.time,stock_id, decision ):
             if "buy" in dec:
                 self.portfolio_array[i] = market[id_stock][i] # add to the portfolio the stock to buy 
             elif "sell" in dec:
                  self.portfolio_array[i] = -market[id_stock][i] # add to the portfolio the stock to buy 
-        
-        self.portfolio_cum = np.cumsum(self.portfolio_array)
+            self.portfolio_value = self.portfolio_array[i] + self.portfolio_value0	# update the value of portfolio by the last item in the array		      
+		 
+        self.portfolio_cum = np.cumsum(self.portfolio_array)  + self.portfolio_value0
         self.plot_portfolio = plt.plot(self.time, self.portfolio_cum  )
         plt.title("Portfolio evolution")
             
@@ -137,6 +147,23 @@ class Environment:
 		self.action = Action(self.time_obj, self.market)
 		self.portfolio = Portfolio(self.time_obj, self.market, self.action)
 		
-#		self.liabilities = Liabilities()
+		#		self.liabilities = Liabilities()
+	def displayEnv(self):
+		
+		while self.portfolio.portfolio_value > 0:
+			
+			for (t, (dec_key, dec_value), portfolio) in zip(self.t, self.action.decision_set.items(), self.portfolio.portfolio_cum):
+				print('---------------------------------------------------')
+				print(f'step : {t} :') 
+				print(f'{dec_key} : {dec_value}')
+				print(f'Portfolio Value : {portfolio}')
+				print('---------------------------------------------------')
+				time.sleep(0.8)
+				
+			break
+		
+
 	
 e = Environment()
+
+
