@@ -21,9 +21,9 @@ class Time:
 		self.t0= 0
 		self.loopingTime()
 		
-	def loopingTime(self):
+	def loopingTime(self, period_max = 1):
 #		self.period_max = int(input("Enter a maximal period time :"))
-		self.period_max = 10
+		self.period_max = period_max
 		self.time = np.arange(self.t0, self.period_max)
 		
 class Stock:
@@ -71,7 +71,7 @@ class Portfolio(Time):
         self.operation(market_obj,action_obj)
 #        self.portfolio_array[0] = self.portfolio_value
         
-    def operation(self, market_obj, action_obj):
+    def operation(self, market_obj, action_obj, showPlot= False):
         decision = list(action_obj.decision_set.values())
         market = market_obj.stocks_dic
         stock_id = action_obj.stock_id 
@@ -82,11 +82,13 @@ class Portfolio(Time):
             elif "sell" in dec:
                  self.portfolio_array[i] = -market[id_stock][i] # add to the portfolio the stock to buy 
             self.portfolio_value = self.portfolio_array[i] + self.portfolio_value0	# update the value of portfolio by the last item in the array		      
-		 
+		
+        
         self.portfolio_cum = np.cumsum(self.portfolio_array)  + self.portfolio_value0
-        self.plot_portfolio = plt.plot(self.time, self.portfolio_cum  )
-        plt.title("Portfolio evolution")
-            
+        if showPlot == True:
+	        self.plot_portfolio = plt.plot(self.time, self.portfolio_cum  )
+	        plt.title("Portfolio evolution")
+	            
             
             
             
@@ -159,10 +161,36 @@ class Environment:
 				print(f'Portfolio Value : {portfolio}')
 				print('---------------------------------------------------')
 				time.sleep(0.8)
-				
+				 	
 			break
 		
-
+	def startSimulation(self):
+		
+		step = 0
+		while True:
+			step +=1
+			self.time_obj =Time()
+			self.t = self.time_obj.time
+			
+			self.stock = Stock(self.time_obj)
+			self.market = Market(self.time_obj)
+			self.action = Action(self.time_obj, self.market)
+			self.portfolio = Portfolio(self.time_obj, self.market, self.action)
+			print('---------------------------------------------------')
+			print(f'step : {step}') 
+			print('The robot takes the following action: {0} : {1}'.format(self.action.decision_set.keys(), self.action.decision_set.values()))
+			print(f'Portfolio Value : {0}'.format(self.portfolio.portfolio_cum))
+			print('---------------------------------------------------')
+			time.sleep(0.8)
+			
+			if self.portfolio.portfolio_value < 950:
+				print("The Reinforcement Learning algorithm got us broken")
+				break
+			
+		else:
+			step = None
+			
+			
 	
 e = Environment()
 
