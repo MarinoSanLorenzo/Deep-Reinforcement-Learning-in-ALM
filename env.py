@@ -23,6 +23,7 @@ os.chdir(path)
 from modules.time import Time
 from modules.stock import Stock, Stock2
 from modules.market import Market
+from modules.portfolio import Portfolio
 from modules.action import Action            
 	
 class Environment:
@@ -82,6 +83,7 @@ class Environment:
 	
 e = Environment()
 
+
 class Environment2:
 	
 	def __init__(self):
@@ -91,28 +93,51 @@ class Environment2:
 	def simulateEnvironment(self):
 		
 		step = 0
-		stock_history_list = []
+		bm_history_array1 = np.array([])
+		bm_history_array2 = np.array([])
+		bm_history_dic = {}
+		stocks_history_dic = {}
+		agent = Agent()
 		while True:
-			s = Stock2().brownian_motion
-			stock_history_list.append(s)
-			cum_stock_value = np.cumsum(stock_history_list)
-			current_stock_value = cum_stock_value[step]
+			s1 = Stock2().brownian_motion
+			s2 = Stock2().brownian_motion
+			
+			bm_history_array1 = np.append(bm_history_array1,s1)
+			bm_history_array2 = np.append(bm_history_array2,s2)
+			
+			bm_history_dic['bm1'] = bm_history_array1
+			bm_history_dic['bm2'] = bm_history_array2
+			
+			cum_stock_value1 = np.cumsum(bm_history_array1)
+			cum_stock_value2 = np.cumsum(bm_history_array2)
+			
+			stocks_history_dic['stock1'] = cum_stock_value1
+			stocks_history_dic['stock2'] = cum_stock_value2
+			
+			current_stock_value1 = cum_stock_value1[step]
+			current_stock_value2 = cum_stock_value2[step]
+			
+			
+			
 			step += 1
 			print('---------------------------------------------------')
 			print(f'step : {step} :') 
-			print(f'Current Stock Value : {current_stock_value}')
+			print(f'Current Stock Value 1: {current_stock_value1}')
+			print(f'Current Stock Value 2: {current_stock_value2}')
+			print(" Agent decision : {0}".format(agent.action(bm_history_dic)))
 			print('---------------------------------------------------')
-			time.sleep(0.8)
-			plt.plot(np.arange(step), cum_stock_value)
+			time.sleep(0.5)
+			plt.plot(np.arange(step), cum_stock_value1, label = "stock1")
+			plt.plot(np.arange(step), cum_stock_value2, label = "stock2")
+			plt.legend(loc= "best")
 			plt.title("Stock evolution")
 			plt.show()
 			 	
-			
-			if current_stock_value < -5:
-				print("Big Loss {0} at step {1}".format(current_stock_value, step))
+			if current_stock_value1 < -3:
+				print("Big Loss {0} at step {1}".format(current_stock_value1, step))
 				break
 		else:
-			step = None
+#			step = None
 			"never got out"
 		
 e = Environment2()
