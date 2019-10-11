@@ -24,7 +24,7 @@ from modules.time import Time
 from modules.stock import Stock, Stock2
 from modules.market import Market
 from modules.portfolio import Portfolio
-from modules.action import Action            
+from modules.action import Action, Agent            
 	
 class Environment:
 	
