@@ -48,20 +48,16 @@ class Agent:
 		
 		def __init__(self):
 			self.mean_value_dic = {} 	
-	
+			self.portfolio_value0 = 1000
+			
 		def action(self, bm_history_dic):
 			  
-			for stock, history in bm_history_dic.items():
-				  self.mean_value_dic[stock] = np.mean(history)
-				  
-			self.stock_to_buy =max(self.mean_value_dic.items(), key=operator.itemgetter(1))[0]
-#			stock_list = []
-#			mean_list = np.array([])
-#			for stock, mean in self.mean_value_dic.items():
-#				stock_list.append(stock)
-#				mean_list = np.append(self.mean_value_dic, mean)
+			for bm, history in bm_history_dic.items():
+				  self.mean_value_dic[bm] = np.mean(history)
 			
-#			print("buy {0}".format(self.stock_to_buy))
+			if   
+			self.stock_to_buy = max(self.mean_value_dic).replace("bm", "stock",1)
+#			self.stock_to_buy =max(self.mean_value_dic.items(), key=operator.itemgetter(1))[0]
 			
 			return self.stock_to_buy
 			
