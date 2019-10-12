@@ -99,24 +99,30 @@ class Environment2:
 		stocks_history_dic = {}
 		agent = Agent()
 		while True:
+			
 			s1 = Stock2().brownian_motion
 			s2 = Stock2().brownian_motion
 			
+			#stock history of random number
 			bm_history_array1 = np.append(bm_history_array1,s1)
 			bm_history_array2 = np.append(bm_history_array2,s2)
 			
+			#store it as dictionnary
 			bm_history_dic['bm1'] = bm_history_array1
 			bm_history_dic['bm2'] = bm_history_array2
 			
+			#cumulate values as stochastic process
 			cum_stock_value1 = np.cumsum(bm_history_array1)
 			cum_stock_value2 = np.cumsum(bm_history_array2)
 			
+			#store it as dictionnary
 			stocks_history_dic['stock1'] = cum_stock_value1
 			stocks_history_dic['stock2'] = cum_stock_value2
 			
 			current_stock_value1 = cum_stock_value1[step]
 			current_stock_value2 = cum_stock_value2[step]
 			
+			action = agent.action(bm_history_dic)
 			
 			
 			step += 1
@@ -124,7 +130,7 @@ class Environment2:
 			print(f'step : {step} :') 
 			print(f'Current Stock Value 1: {current_stock_value1}')
 			print(f'Current Stock Value 2: {current_stock_value2}')
-			print(" Agent decision : {0}".format(agent.action(bm_history_dic)))
+			print(" Agent decision : {0}".format(action))
 			print('---------------------------------------------------')
 			time.sleep(0.5)
 			plt.plot(np.arange(step), cum_stock_value1, label = "stock1")
