@@ -107,21 +107,8 @@ class Environment2:
 			
 			s1.autoCorrelation(step)
 			s2.autoCorrelation(step)
-#			s1 = Stock2().brownian_motion
-#			s2 = Stock2().brownian_motion
-#			
-			#stock history of random number
-#			bm_history_array1 = np.append(bm_history_array1,s1)
-#			bm_history_array2 = np.append(bm_history_array2,s2)
-#			
-			#store it as dictionnary
-#			self.bm_history_dic['bm1'] = bm_history_array1
-#			self.bm_history_dic['bm2'] = bm_history_array2
-#			
-			#cumulate values as stochastic process
-#			cum_stock_value1 = np.cumsum(bm_history_array1)
-#			cum_stock_value2 = np.cumsum(bm_history_array2)
-#			
+	
+	
 			#store it as dictionnary
 			self.stocks_history_dic['stock1'] = s1.cum_stock_value
 			self.stocks_history_dic['stock2'] = s2.cum_stock_value
@@ -131,6 +118,8 @@ class Environment2:
 			
 			action = self.agent.action(self.stocks_history_dic, step)
 			self.action_history_dic[f'action_step_{step}'] = action
+			
+			self.agent.portfolio(self.stocks_history_dic, step)
 			
 			step += 1
 			print('---------------------------------------------------')
