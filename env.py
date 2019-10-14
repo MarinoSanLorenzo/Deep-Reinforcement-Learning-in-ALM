@@ -93,38 +93,43 @@ class Environment2:
 	def simulateEnvironment(self):
 		
 		step = 0
-		bm_history_array1 = np.array([])
-		bm_history_array2 = np.array([])
-		self.bm_history_dic = {}
+#		bm_history_array1 = np.array([])
+#		bm_history_array2 = np.array([])
+#		self.bm_history_dic = {}
 		self.stocks_history_dic = {}
 		self.agent = Agent()
 		self.action_history_dic = {}
 		
+		s1 = Stock2(initial_value=100)
+		s2 = Stock2(initial_value=100)
+		
 		while True:
 			
-			s1 = Stock2().brownian_motion
-			s2 = Stock2().brownian_motion
-			
+			s1.autoCorrelation(step)
+			s2.autoCorrelation(step)
+#			s1 = Stock2().brownian_motion
+#			s2 = Stock2().brownian_motion
+#			
 			#stock history of random number
-			bm_history_array1 = np.append(bm_history_array1,s1)
-			bm_history_array2 = np.append(bm_history_array2,s2)
-			
+#			bm_history_array1 = np.append(bm_history_array1,s1)
+#			bm_history_array2 = np.append(bm_history_array2,s2)
+#			
 			#store it as dictionnary
-			self.bm_history_dic['bm1'] = bm_history_array1
-			self.bm_history_dic['bm2'] = bm_history_array2
-			
+#			self.bm_history_dic['bm1'] = bm_history_array1
+#			self.bm_history_dic['bm2'] = bm_history_array2
+#			
 			#cumulate values as stochastic process
-			cum_stock_value1 = np.cumsum(bm_history_array1)
-			cum_stock_value2 = np.cumsum(bm_history_array2)
-			
+#			cum_stock_value1 = np.cumsum(bm_history_array1)
+#			cum_stock_value2 = np.cumsum(bm_history_array2)
+#			
 			#store it as dictionnary
-			self.stocks_history_dic['stock1'] = cum_stock_value1
-			self.stocks_history_dic['stock2'] = cum_stock_value2
+			self.stocks_history_dic['stock1'] = s1.cum_stock_value
+			self.stocks_history_dic['stock2'] = s2.cum_stock_value
 			
-			current_stock_value1 = cum_stock_value1[step]
-			current_stock_value2 = cum_stock_value2[step]
+			current_stock_value1 = s1.cum_stock_value[step]
+			current_stock_value2 = s2.cum_stock_value[step]
 			
-			action = self.agent.action(self.bm_history_dic, step)
+			action = self.agent.action(self.stocks_history_dic, step)
 			self.action_history_dic[f'action_step_{step}'] = action
 			
 			step += 1
@@ -139,13 +144,13 @@ class Environment2:
 			
 			print('---------------------------------------------------')
 			time.sleep(0.8)
-			plt.plot(np.arange(step), cum_stock_value1, label = "stock1")
-			plt.plot(np.arange(step), cum_stock_value2, label = "stock2")
+			plt.plot(np.arange(step), s1.cum_stock_value, label = "stock1")
+			plt.plot(np.arange(step), s2.cum_stock_value, label = "stock2")
 			plt.legend(loc= "best")
 			plt.title("Stock evolution")
 			plt.show()
 			 	
-			if current_stock_value1 < -1 or current_stock_value1 <-1:
+			if current_stock_value1 < 0.9*s1.initial_value or current_stock_value2 < 0.9*s2.initial_value :
 				print("Big Loss {0} at step {1}".format(current_stock_value1, step))
 				break
 		else:

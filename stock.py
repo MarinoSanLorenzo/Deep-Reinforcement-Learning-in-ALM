@@ -21,9 +21,17 @@ class Stock:
 
 class Stock2:
     	
-	def __init__(self):
-		self.brownianMotion()
+	def __init__(self, initial_value = 100):
+		self.initial_value = initial_value
+		self.cum_stock_value = np.array([])
+#		self.brownianMotion()
 		
 		
-	def brownianMotion(self, plot= False):
-		self.brownian_motion = np.random.normal(0,1) 
+	def autoCorrelation(self, step, plot= False):
+		
+		if step == 0:
+			self.cum_stock_value = np.append(self.cum_stock_value, self.initial_value)
+		else:
+			stock_value = self.cum_stock_value[step-1] +  np.random.normal(0,1) 
+			self.cum_stock_value = np.append(self.cum_stock_value, stock_value)
+		

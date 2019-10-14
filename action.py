@@ -49,10 +49,13 @@ class Agent:
 		
 		def __init__(self):
 
-			self.portfolio_value0 = 1000
+			self.cash_value0 = 1000
+			self.asset_nbstock_history_dic = {"stock1" : np.array([]), "stock2" : np.array([])}
+			self.asset_vstock_history_dic = {"stock1" : np.array([]), "stock2" : np.array([])}
+			self.asset_value_history = np.array([])
+			self.cash_history = np.array([])
 			
-			
-		def action(self, bm_history_dic, step):
+		def action(self, stocks_history_dic, step):
 			self.mean_value_dic = {} 	
 			self.variation_last_step_dic = {} 
 			self.action_dic = {}
@@ -60,21 +63,21 @@ class Agent:
 			self.stock_to_sell_dic = {}
 			self.stock_to_keep_dic = {}
 			  
-			for bm, history in bm_history_dic.items():
+			for stock_name, stock_value in stocks_history_dic.items():
 				# for decision to keep stock
-				  self.mean_value_dic[bm] = np.mean(history) # for decision
+#				  self.mean_value_dic[bm] = np.mean(history) # for decision
 				# for decision to buy/sell stock
-				  self.variation_last_step_dic[bm] = calc_var_step(history[-3:step]) 
+				  self.variation_last_step_dic[stock_name] = calc_var_step(stock_value[-3:step]) 
 			
 			
 			
-			for bm, variation in self.variation_last_step_dic.items():
+			for stock_name, variation in self.variation_last_step_dic.items():
 				if variation > 0.1:
-					self.stock_to_buy_dic[bm.replace("bm", "stock",1)] = variation # rename the bm key as stock for the aaction/decision of agent
+					self.stock_to_buy_dic[stock_name] = variation # rename the bm key as stock for the aaction/decision of agent
 				elif variation < -0.1:
-					self.stock_to_sell_dic[bm.replace("bm", "stock",1)] = variation
+					self.stock_to_sell_dic[stock_name] = variation
 				elif variation <= 0.1 and variation >= -0.1:
-					self.stock_to_keep_dic[bm.replace("bm", "stock",1)] = variation
+					self.stock_to_keep_dic[stock_name] = variation
 					
 			
 			
@@ -91,10 +94,48 @@ class Agent:
 			return (self.action_dic)
 			
 			
-		def portfolio(self, stocks_history_dic):
-			self.portfolio_value0
+		def portfolio(self, stocks_history_dic, step):
+			self.current_value_stock = {}
+			if step ==0:
+				self.cash_history = np.append(self.cash_history,self.cash_value0)
+			else:
+				for stock, value in stocks_history_dic.items():
+					self.current_value_stock[stock] = value[step]
 			
-			
+				for action, stocks in self.action_dic.items():
+					
+					if "buy" in action:
+						for stock in stocks:
+    						if self.cash_history[step-1] >= current_value_stock[stock]:
+    							# get values of number of stock and current values on the market
+								self.asset_nbstock_history_dic[stock] = np.append(self.asset_nbstock_history_dic[stock] , 1)
+								self.asset_vstock_history_dic[stock] = np.append(self.asset_vstock_history_dic[stock] , self.current_value_stock[stock])
+								volume_operation = self.asset_nbstock_history_dic[stock]*self.asset_vstock_history_dic[stock] 
+								# buy by withdrawing the value on the cash dic
+								self.cash_history = np.append(self.cash_history, self.cash_history - volume_operation)
+								self.asset_value_history_dic[stock] = np.append(self.asset_value_history_dic[stock] ,volume_operation)
+							else:
+    								print("not enough cash :{0} to buy {1} of value {2}".format(cash_history[step-1], stock,current_value_stock[stock] ))
+				
+					elif "sell" in action:
+						for stock in stocks:
+    						# get values of number of stock and current values on the market
+							self.asset_nbstock_history_dic[stock] = np.append(self.asset_nbstock_history_dic[stock] , 1)
+							self.asset_vstock_history_dic[stock] = np.append(self.asset_vstock_history_dic[stock] , self.current_value_stock[stock])
+							volume_operation = self.asset_nbstock_history_dic[stock]*self.asset_vstock_history_dic[stock] 
+							# sell by withdrawing the value on the cash dic
+							self.cash_history = np.append(self.cash_history, self.cash_history + volume_operation)
+							self.asset_value_history_dic[stock] = np.append(self.asset_value_history_dic[stock] ,-volume_operation)
+						
+				
+				#	elif "keep" in action:-
+				#		for stock in stocks:
+				#			portfolio_nbstock_history_dic[stock] = np.append(portfolio_nbstock_history_dic[stock] , 1)
+				#			portfolio_vstock_history_dic[stock] = np.append(portfolio_vstock_history_dic[stock] , current_value_stock[stock])
+				#		
+						
+				self.portfolio_value_history 
+						
 			
 			
 
