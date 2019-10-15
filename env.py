@@ -107,7 +107,8 @@ class Environment2:
 		
 		while True:
 			
-			s1.autoCorrelation(step, mean = 0.01, sd=2)
+			#generate stocks
+			s1.autoCorrelation(step, mean = 0.001*s1.initial_value, sd=2)
 			s2.autoCorrelation(step)
 	
 	
@@ -118,17 +119,23 @@ class Environment2:
 			current_stock_value1 = s1.cum_stock_value[step]
 			current_stock_value2 = s2.cum_stock_value[step]
 			
+			# store agent action history
 			action = self.agent.action(self.stocks_history_dic, step)
 			self.action_history_dic[f'action_step_{step}'] = action
-			
+			# monitor portfolio
 			self.agent.portfolio(self.stocks_history_dic, step)
+	
 			
+			# calculate update total value CASH + SUM OF ASSET values
 			self.total_value = calc_total_value(self.agent.cash_history, self.agent.asset_value_history_dic, step)
 			self.total_value_history = np.append(self.total_value_history, self.total_value)
+			# calculate profit of the operation
+			self.agent.profit(self.total_value_history, step)
 			
 			print('---------------------------------------------------')
 			print(f'step : {step} :') 
 			print("Total value is {0}".format(self.total_value))
+			print("Profit realized by the operation is {0}".format(self.agent.profit_history[step])) # or self.profit_step
 			
 			print('---------------------------------------------------')
 			print(f'Current Stock Value 1: {current_stock_value1}')
@@ -161,7 +168,7 @@ class Environment2:
 #			plt.title("Total value evolution")
 #			plt.show()
 			
-			if step > 10000 or self.total_value <0:
+			if step > 500 or self.total_value <0:
 				print("Big Loss {0} at step {1}".format(current_stock_value1, step))
 				break
 		else:

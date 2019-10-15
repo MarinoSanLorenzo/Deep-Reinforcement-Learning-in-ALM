@@ -32,6 +32,6 @@ class Stock2:
 		if step == 0:
 			self.cum_stock_value = np.append(self.cum_stock_value, self.initial_value)
 		else:
-			stock_value = self.cum_stock_value[step-1] +  np.random.normal(mean,sd) 
+			stock_value = max(self.cum_stock_value[step-1] +  np.random.normal(mean,sd),0)  # can't have a stock lower than 0
 			self.cum_stock_value = np.append(self.cum_stock_value, stock_value)
 		

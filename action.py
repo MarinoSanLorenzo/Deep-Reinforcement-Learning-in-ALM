@@ -5,7 +5,7 @@ import operator
 from modules.time import Time
 from modules.stock import Stock
 from modules.market import Market
-from modules.calc_var_step import calc_var_step
+from modules.calc_var_step import calc_var_step, calc_mean_var_step
 
 
 class Action:
@@ -50,11 +50,13 @@ class Agent:
 		def __init__(self):
 
 			self.cash_value0 = 1000
+			self.profit0 = 0
 			self.asset_nbstock_history_dic = {}
 			self.asset_vstock_history_dic = {}
 			self.asset_value_history_dic = {}
 			self.cash_history = np.array([])
 			self.action_dic_history = {}
+			self.profit_history = np.array([]) # reward
 			
 		def action(self, stocks_history_dic, step):
 			self.mean_value_dic = {} 	
@@ -66,7 +68,7 @@ class Agent:
 			  
 			for stock_name, stock_value in stocks_history_dic.items():
 				  # calculate last variations
-				  self.variation_last_step_dic[stock_name] = calc_var_step(stock_value[-3:step]) 
+				  self.variation_last_step_dic[stock_name] = calc_mean_var_step(stock_value[-3:step]) 
 			
 			
 			
@@ -172,7 +174,22 @@ class Agent:
 
 
 
-#    	def reward(self, actions_history):		
+		def profit(self, total_value_history, step):
+			
+			if step ==0:
+				self.profit_history = np.append(self.profit_history, self.profit0)
+			
+			elif step>0:
+				self.profit_step = calc_var_step(total_value_history, step)
+				self.profit_history = np.append(self.profit_history, self.profit_step)
+			
+			
+			
+			
+			
+			
+			
+			
 
 
 	
