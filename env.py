@@ -24,7 +24,8 @@ from modules.time import Time
 from modules.stock import Stock, Stock2
 from modules.market import Market
 from modules.portfolio import Portfolio
-from modules.action import Action, Agent            
+from modules.action import Action, Agent
+from modules.calc_total_value import calc_total_value         
 #######	
 #class Environment:
 #	
@@ -99,6 +100,7 @@ class Environment2:
 		self.stocks_history_dic = {}
 		self.agent = Agent()
 		self.action_history_dic = {}
+		self.total_value_history = np.array([])
 		
 		s1 = Stock2(initial_value=100)
 		s2 = Stock2(initial_value=100)
@@ -121,9 +123,14 @@ class Environment2:
 			
 			self.agent.portfolio(self.stocks_history_dic, step)
 			
-			step += 1
+			self.total_value = calc_total_value(self.agent.cash_history, self.agent.asset_value_history_dic, step)
+			self.total_value_history = np.append(self.total_value_history, self.total_value)
+			
 			print('---------------------------------------------------')
 			print(f'step : {step} :') 
+			print("Total value is {0}".format(self.total_value))
+			
+			print('---------------------------------------------------')
 			print(f'Current Stock Value 1: {current_stock_value1}')
 			print(f'Current Stock Value 2: {current_stock_value2}')
 			print('---------------------------------------------------')
@@ -132,13 +139,22 @@ class Environment2:
 			print(" Agent decision to keep : {0}".format(action['stock_to_keep']))
 			
 			print('---------------------------------------------------')
-			time.sleep(0.8)
+			print("The agent cash amount is : {0}".format(self.agent.cash_history[step]))
+			print("The agent asset value of stock 1 is : {0}".format(self.agent.asset_value_history_dic["stock1"][step]))
+			print("The agent asset value of stock 2 is : {0}".format(self.agent.asset_value_history_dic["stock2"][step]))
+			print('---------------------------------------------------')
+			step += 1 	
+			time.sleep(1.5)
 			plt.plot(np.arange(step), s1.cum_stock_value, label = "stock1")
 			plt.plot(np.arange(step), s2.cum_stock_value, label = "stock2")
 			plt.legend(loc= "best")
 			plt.title("Stock evolution")
 			plt.show()
-			 	
+			plt.plot(np.arange(step), self.total_value_history, label = "Total_value")
+			plt.legend(loc= "best")
+			plt.title("Total value evolution")
+			plt.show()
+			
 			if current_stock_value1 < 0.9*s1.initial_value or current_stock_value2 < 0.9*s2.initial_value :
 				print("Big Loss {0} at step {1}".format(current_stock_value1, step))
 				break
