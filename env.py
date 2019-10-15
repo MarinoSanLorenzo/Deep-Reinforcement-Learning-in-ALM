@@ -107,7 +107,7 @@ class Environment2:
 		
 		while True:
 			
-			s1.autoCorrelation(step)
+			s1.autoCorrelation(step, mean = 0.01, sd=2)
 			s2.autoCorrelation(step)
 	
 	
@@ -150,12 +150,18 @@ class Environment2:
 			plt.legend(loc= "best")
 			plt.title("Stock evolution")
 			plt.show()
-			plt.plot(np.arange(step), self.total_value_history, label = "Total_value")
-			plt.legend(loc= "best")
+			fig, ax = plt.subplots()
+			ax.plot(np.arange(step),self.total_value_history)
+			ax.axhline(y=self.agent.cash_value0,color='red',linestyle='--')
 			plt.title("Total value evolution")
 			plt.show()
+#	
+#			plt.plot(np.arange(step), self.total_value_history, label = "Total_value")
+#			plt.legend(loc= "best")
+#			plt.title("Total value evolution")
+#			plt.show()
 			
-			if current_stock_value1 < 0.9*s1.initial_value or current_stock_value2 < 0.9*s2.initial_value :
+			if step > 10000 or self.total_value <0:
 				print("Big Loss {0} at step {1}".format(current_stock_value1, step))
 				break
 		else:

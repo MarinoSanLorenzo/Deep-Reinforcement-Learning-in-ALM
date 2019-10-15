@@ -27,11 +27,11 @@ class Stock2:
 #		self.brownianMotion()
 		
 		
-	def autoCorrelation(self, step, plot= False):
+	def autoCorrelation(self, step, mean=0, sd=1,plot= False):
 		
 		if step == 0:
 			self.cum_stock_value = np.append(self.cum_stock_value, self.initial_value)
 		else:
-			stock_value = self.cum_stock_value[step-1] +  np.random.normal(0,1) 
+			stock_value = self.cum_stock_value[step-1] +  np.random.normal(mean,sd) 
 			self.cum_stock_value = np.append(self.cum_stock_value, stock_value)
 		

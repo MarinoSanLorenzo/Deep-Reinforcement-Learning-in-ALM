@@ -158,7 +158,7 @@ class Agent:
 								print("Cannot sell {0} as the number of etf of this stock is {1}".format(stock, self.asset_nbstock_history_dic[stock][step-1]))
 				# exit the loop by appending the previous value of our cash as we didn't take any actions
 				else:
-						print("do nothing")
+#						print("do nothing")
 						self.cash_history = np.append(self.cash_history, self.cash_history[step-1])
 						for stock in self.asset_value_history_dic.keys():
 							self.asset_nbstock_history_dic[stock] = np.append(self.asset_nbstock_history_dic[stock], self.asset_nbstock_history_dic[stock][step-1])
