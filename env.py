@@ -109,7 +109,7 @@ class Environment2:
 			
 			#generate stocks
 			s1.autoCorrelation(step, mean = 0.001*s1.initial_value, sd=2)
-			s2.autoCorrelation(step)
+			s2.autoCorrelation(step, mean = -0.001*s1.initial_value, sd=2)
 	
 	
 			#store it as dictionnary
@@ -151,7 +151,7 @@ class Environment2:
 			print("The agent asset value of stock 2 is : {0}".format(self.agent.asset_value_history_dic["stock2"][step]))
 			print('---------------------------------------------------')
 			step += 1 	
-			time.sleep(1.5)
+			time.sleep(0)
 			plt.plot(np.arange(step), s1.cum_stock_value, label = "stock1")
 			plt.plot(np.arange(step), s2.cum_stock_value, label = "stock2")
 			plt.legend(loc= "best")
@@ -168,8 +168,9 @@ class Environment2:
 #			plt.title("Total value evolution")
 #			plt.show()
 			
-			if step > 500 or self.total_value <0:
-				print("Big Loss {0} at step {1}".format(current_stock_value1, step))
+			if step > 10000 or self.total_value <0:
+				print("Total profit: {0} at step {1}".format(self.total_value-self.agent.cash_value0, step))
+				print("ROE: {0}".format(round(100*(self.total_value/self.agent.cash_value0)-1),2))
 				break
 		else:
 #			step = None
