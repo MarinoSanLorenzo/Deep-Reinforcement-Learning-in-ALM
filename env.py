@@ -17,7 +17,8 @@ import matplotlib.pyplot as plt
 import os
 
 
-path = "C:\\Users\\sam\\Documents\\DL\\Reinforcement Learning in ALM\\Deep-Reinforcement-Learning-in-ALM-master\\Deep-Reinforcement-Learning-in-ALM-master"
+#path = "C:\\Users\\sam\\Documents\\DL\\Reinforcement Learning in ALM\\Deep-Reinforcement-Learning-in-ALM-master\\Deep-Reinforcement-Learning-in-ALM-master"
+path = "C:\\Users\\msanl\\Machine Learning\\Deep_Reinforcement_Learning\\Deep-Reinforcement-Learning-in-ALM-master"
 os.chdir(path)
 
 from modules.time import Time
@@ -177,6 +178,7 @@ class Environment2:
 			"never got out"
 		
 e = Environment2()
+
 
 
 
