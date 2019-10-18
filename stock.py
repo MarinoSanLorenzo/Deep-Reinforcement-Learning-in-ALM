@@ -21,11 +21,17 @@ class Stock:
 
 class Stock2:
     	
-	def __init__(self, initial_value = 100):
+	def __init__(self, initial_value = 100, index = None):
 		self.initial_value = initial_value
 		self.cum_stock_value = np.array([])
-#		self.brownianMotion()
+		self.index = index
+
 		
+	def __str__(self):
+		if self.index is None:
+			return("stock")
+		elif not(self.index is None):
+			return("stock"+str(self.index))
 		
 	def autoCorrelation(self, step, mean=0, sd=1,plot= False):
 		
@@ -35,3 +41,4 @@ class Stock2:
 			stock_value = max(self.cum_stock_value[step-1] +  np.random.normal(mean,sd),0)  # can't have a stock lower than 0
 			self.cum_stock_value = np.append(self.cum_stock_value, stock_value)
 		
+    

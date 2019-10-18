@@ -27,69 +27,23 @@ from modules.market import Market
 from modules.portfolio import Portfolio
 from modules.action import Action, Agent
 from modules.calc_total_value import calc_total_value         
-#######	
-#class Environment:
-#	
-#	def __init__(self):
-#		self.state = 0
-#		self.time_obj =Time()
-#		self.t = self.time_obj.time
-#		
-#		self.stock = Stock(self.time_obj)
-#		self.market = Market(self.time_obj)
-#		self.action = Action(self.time_obj, self.market)
-#		self.portfolio = Portfolio(self.time_obj, self.market, self.action)
-#		
-#		#		self.liabilities = Liabilities()
-#	def displayEnv(self):
-#		
-#		while self.portfolio.portfolio_value > 0:
-#			
-#			for (t, (dec_key, dec_value), portfolio) in zip(self.t, self.action.decision_set.items(), self.portfolio.portfolio_cum):
-#				print('---------------------------------------------------')
-#				print(f'step : {t} :') 
-#				print(f'{dec_key} : {dec_value}')
-#				print(f'Portfolio Value : {portfolio}')
-#				print('---------------------------------------------------')
-#				time.sleep(0.8)
-#				 	
-#			break
-#		
-#	def startSimulation(self):
-#		
-#		step = 0
-#		while True:
-#			step +=1
-#			self.time_obj =Time()
-#			self.t = self.time_obj.time
-#			
-#			self.stock = Stock(self.time_obj)
-#			self.market = Market(self.time_obj)
-#			self.action = Action(self.time_obj, self.market)
-#			self.portfolio = Portfolio(self.time_obj, self.market, self.action)
-#			print('---------------------------------------------------')
-#			print(f'step : {step}') 
-#			print('The robot takes the following action: {0} : {1}'.format(self.action.decision_set.keys(), self.action.decision_set.values()))
-#			print(f'Portfolio Value : {0}'.format(self.portfolio.portfolio_cum))
-#			print('---------------------------------------------------')
-#			time.sleep(0.8)
-#			
-#			if self.portfolio.portfolio_value < 950:
-#				print("The Reinforcement Learning algorithm got us broken")
-#				break
-#			
-#		else:
-#			step = None
-			
-			
-	
-#e = Environment()
-
 
 class Environment2:
 	
-	def __init__(self):
-		self.simulateEnvironment()
+	def __init__(self, simulate = False):
+		if simulate:
+			self.simulateEnvironment()
+        
+	def make_stock_history(self):
+		self.stocks_history_dic = {}
+		s1 = Stock2(initial_value=100, index=1)
+		s2 = Stock2(initial_value=100, index=2)
+        
+		for step in range(100):
+			s1.autoCorrelation(step, mean = 0.001*s1.initial_value, sd=2)
+			s2.autoCorrelation(step, mean = -0.001*s1.initial_value, sd=2)
+			self.stocks_history_dic[s1.__str__()] = s1.cum_stock_value
+			self.stocks_history_dic[s2.__str__()] = s2.cum_stock_value
 		
 		
 	def simulateEnvironment(self):
@@ -103,8 +57,8 @@ class Environment2:
 		self.action_history_dic = {}
 		self.total_value_history = np.array([])
 		
-		s1 = Stock2(initial_value=100)
-		s2 = Stock2(initial_value=100)
+		s1 = Stock2(initial_value=100, index=1)
+		s2 = Stock2(initial_value=100, index=2)
 		
 		while True:
 			
@@ -114,8 +68,8 @@ class Environment2:
 	
 	
 			#store it as dictionnary
-			self.stocks_history_dic['stock1'] = s1.cum_stock_value
-			self.stocks_history_dic['stock2'] = s2.cum_stock_value
+			self.stocks_history_dic[s1.__str__()] = s1.cum_stock_value
+			self.stocks_history_dic[s2.__str__()] = s2.cum_stock_value
 			
 			current_stock_value1 = s1.cum_stock_value[step]
 			current_stock_value2 = s2.cum_stock_value[step]

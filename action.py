@@ -8,44 +8,6 @@ from modules.stock import Stock
 from modules.market import Market
 from modules.calc_var_step import calc_var_step, calc_mean_var_step
 
-
-class Action:
-	
-	def __init__(self, time_obj, market_obj):
-		
-		self.time = time_obj.time
-		self.actionSet()
-		self.chooseStock(market_obj)
-		self.decision(market_obj)
-        
-		
-		
-	def action(self):
-		
-		self.action_value = np.random.choice(["buy","sell"])
-		
-		return self.action_value
-		
-	def actionSet(self):
-		self.action_set =  [ self.action() for t in range(self.time.shape[0]) ] 	
-		return self.action_set
-    
-	def chooseStock(self,market_obj):
-		# generate stock index for further indexing in the portfolio class
-		self.choice_stock = [np.random.randint(market_obj.number_stock ) for t in range(self.time.shape[0]) ]
-		return self.choice_stock
-	
-	def decision(self, market_obj):
-        # concatenate the decision buy/sell + stock_{i} eg. {decision0 : "buy stock6",...}
-		self.decision_set = {}
-		self.stock_id = []
-		for ((i, act), stock_index) in zip(enumerate(self.action_set), self.choice_stock):
-                  self.decision_set[f'decision_{i}'] = act + " stock" + str(stock_index)
-                  self.stock_id.append("stock" + str(stock_index))
-		return self.decision_set
-	# be careful change the decision set
-
-
 class Agent:
 		
 		def __init__(self):
@@ -69,17 +31,20 @@ class Agent:
 			  
 			for stock_name, stock_value in stocks_history_dic.items():
 				  # calculate last variations
-				  self.variation_last_step_dic[stock_name] = calc_mean_var_step(stock_value[-3:step]) 
+				  self.variation_last_step_dic[stock_name] = calc_mean_var_step(stock_value[step-3:step]) 
 			
 			
 			
 			for stock_name, variation in self.variation_last_step_dic.items():
 				# if variation higher/lower than treshold we buy/sell otherwise we keep the stock
 				if variation > 0.5:# in percentage
+					print("variation is high {0}".format(variation))
 					self.stock_to_buy_dic[stock_name] = math.ceil(variation) # rename the bm key as stock for the aaction/decision of agent
 				elif variation < -0.5:
+					print("variation is low {0}".format(variation))
 					self.stock_to_sell_dic[stock_name] = math.floor(variation)
 				else:
+					print("variation is moderate {0}".format(variation))
 					self.stock_to_buy_dic[stock_name] = 0
 					self.stock_to_sell_dic[stock_name] = 0
                 
@@ -119,13 +84,13 @@ class Agent:
 						
     					self.current_value_stock[stock] = value[step]
 			elif step>0:
-				
+				self.asset_value_buy_total = 0
+				self.asset_value_sell_total = 0
 				for stock, value in stocks_history_dic.items():
 					self.current_value_stock[stock] = value[step]
 				
 				# we want to know what actions we took for what stock
-                self.asset_value_buy_total = 0
-                self.asset_value_sell_total = 0
+                
 				for action, stocks_dic in self.action_dic.items():
 					
 					if "buy" in action: # be careful because action can be an empty list
