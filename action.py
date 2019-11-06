@@ -99,12 +99,12 @@ class Agent:
 								# if we have enough cash, we buy the stock
 	    						if self.cash_history[step-1] >= self.current_value_stock[stock]:
 									   # we append the etf
-									   
+									   etf=1
 									   self.asset_nbstock_history_dic[stock] =  np.append(self.asset_nbstock_history_dic[stock] ,self.asset_nbstock_history_dic[stock][step-1] + nb_stocks)
 									   # append the current value of the stock
 									   self.asset_vstock_history_dic[stock] =  np.append(self.asset_vstock_history_dic[stock] , self.current_value_stock[stock])
 									   # derive the number of etfs * the current value of the stock
-                                       self.volume_operation = float(etf*self.current_value_stock[stock] )
+									   self.volume_operation = float(etf*self.current_value_stock[stock] )
 									   
 									   # buy by withdrawing the value on the cash dic
 #									   print("cash_history : {0} -- volume_operation {1}".format(self.cash_history, self.volume_operation))
@@ -113,13 +113,13 @@ class Agent:
 									   # add this value to our fund
 									   self.asset_value_history_dic[stock] = np.append(self.asset_value_history_dic[stock] , self.asset_nbstock_history_dic[stock][step-1]*self.current_value_stock[stock] + self.volume_operation)
                                        
-                                       self.asset_value_buy_total += self.volume_operation
+									   self.asset_value_buy_total += self.volume_operation
 	    						else:
 									   print("not enough cash :{0} to buy {1} of value {2}".format(self.cash_history[step-1], stock,self.current_value_stock[stock] ))
 				
-					elif "sell" in action and len(stocks) != 0:
+					elif "sell" in action: #and len(stocks) != 0:
 #						print("sell")
-						for stock in stocks:
+						for stock, nb_stocks in stocks_dic.items():
     						# get values of number of stock and current values on the market
 							if self.asset_nbstock_history_dic[stock][step-1] >0:
 								etf=1
@@ -129,7 +129,7 @@ class Agent:
 								# sell by withdrawing the value on the cash dic
 #								self.cash_history = np.append(self.cash_history, self.cash_history[step-1] + self.volume_operation)
 								self.asset_value_history_dic[stock] = np.append(self.asset_value_history_dic[stock] , self.asset_nbstock_history_dic[stock][step-1]*self.current_value_stock[stock] - self.volume_operation)
-                                self.asset_value_sell_total += self.volume_operation
+								self.asset_value_sell_total += self.volume_operation
 							elif self.asset_nbstock_history_dic[stock][step-1] <=0:
 								print("Cannot sell {0} as the number of etf of this stock is {1}".format(stock, self.asset_nbstock_history_dic[stock][step-1]))
 				# exit the loop by appending the previous value of our cash as we didn't take any actions
