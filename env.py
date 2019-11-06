@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Created on Tue Oct  1 15:23:17 2019
@@ -25,7 +26,7 @@ from modules.time import Time
 from modules.stock import Stock, Stock2
 from modules.market import Market
 from modules.portfolio import Portfolio
-from modules.action import Action, Agent
+from modules.action import Agent#Action, Agent
 from modules.calc_total_value import calc_total_value         
 
 class Environment2:
@@ -98,7 +99,7 @@ class Environment2:
 			print('---------------------------------------------------')
 			print(" Agent decision to buy : {0}".format(action['stock_to_buy']))
 			print(" Agent decision to sell : {0}".format(action['stock_to_sell']))
-			print(" Agent decision to keep : {0}".format(action['stock_to_keep']))
+#			print(" Agent decision to keep : {0}".format(action['stock_to_keep']))
 			
 			print('---------------------------------------------------')
 			print("The agent cash amount is : {0}".format(self.agent.cash_history[step]))
